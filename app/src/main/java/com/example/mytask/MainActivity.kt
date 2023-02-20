@@ -11,44 +11,33 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.mytask.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val navView: BottomNavigationView = binding.navView
-
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+            )
+        )
 
-        val appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications,
-            R.id.navigation_profile, R.id.newTaskFragment
-        ))
-
-
-        val listWithoutBottomNav = setOf(R.id.newTaskFragment)
-        val listWithoutAppBar = setOf(R.id.newTaskFragment, R.id.navigation_profile)
-
-        navController.addOnDestinationChangedListener{_, destination, _ ->
-            if (listWithoutBottomNav.contains(destination.id)) {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.newTaskFragment || destination.id == R.id.onBoardFragment) {
                 navView.visibility = View.GONE
-            }else{
+            } else {
                 navView.visibility = View.VISIBLE
             }
 
-            if(listWithoutAppBar.contains(destination.id)){
+            if (destination.id == R.id.onBoardFragment) {
                 supportActionBar?.hide()
-            }else{
-                supportActionBar?.show()
             }
         }
 
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-    }
-}
+
+    }}

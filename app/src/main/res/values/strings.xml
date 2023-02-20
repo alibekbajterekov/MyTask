@@ -8,4 +8,6 @@
     <string name="name">name</string>
     <string name="title_profile">profile</string>
     <string name="sort">sort</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
 </resources>
