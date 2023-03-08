@@ -1,28 +1,29 @@
 package com.example.mytask.ui.profile
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import com.example.mytask.R
-import com.example.mytask.databinding.FragmentProfileBinding
-import java.util.prefs.Preferences
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import com.example.myapplication.databinding.FragmentProfileBinding
+import com.example.mytask.ext.loadImage
+import com.example.mytask.utils.Preferences
+
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
-
+    private lateinit var preferences: Preferences
 
 
     var mGetContent: ActivityResultLauncher<String> = registerForActivityResult(
-        ActivityResultContracts.GetContent()) { uri ->
-        binding.imgProfile.setImageURI(uri)
+        ActivityResultContracts.GetContent()) {uri ->
 
-
+        binding.imgProfile.loadImage(uri.toString())
+        Preferences(requireContext()).setImageProfile(uri.toString())
     }
-
 
 
     override fun onCreateView(
@@ -36,7 +37,6 @@ class ProfileFragment : Fragment() {
 
         return binding.root
     }
-
     private fun initListeners() {
         binding.imgProfile.setOnClickListener {
             mGetContent.launch("image/*")
@@ -47,6 +47,16 @@ class ProfileFragment : Fragment() {
     private fun initViews() {
 
 
+        binding.imgProfile.loadImage(Preferences(requireContext()).getImageProfile().toString())
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        preferences = Preferences(requireContext())
+        binding.etName.setText(preferences.getName())
+        binding.etName.addTextChangedListener{
+            preferences.saveName(binding.etName.text.toString())
+        }
     }
-    }
+
+}
